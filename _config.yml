@@ -1,0 +1,13 @@
+theme: jekyll-theme-cayman
+title: Send to Google Keep — Opera Extension
+description: Independent open-source Opera/Chromium extension for saving pages, links, and selected text to Google Keep
+url: https://bellodox.github.io
+baseurl: /send-to-google-keep-new
+exclude:
+  - extension
+  - tests
+  - node_modules
+  - package.json
+  - CHANGELOG.md
+  - RELEASE_NOTES.md
+  - TEST_REPORT.md

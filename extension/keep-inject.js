@@ -506,13 +506,18 @@ export async function insertIntoKeep(note) {
             if (!el?.isConnected) return false;
             el.focus();
             if (field(el) && el.isContentEditable) {
-                let used=false;
-                try { used=document.execCommand('insertText',false,text) && value(el).includes(text); } catch { /* fallback */ }
-                if (!used) {
-                    el.textContent=text;
-                    el.dispatchEvent(new InputEvent('input',{bubbles:true,inputType:'insertText',data:text}));
+                // Chromium may return false even after Keep accepted the text.
+                // Never retype into a populated or synchronously replaced field.
+                let accepted=false;
+                try { accepted=Boolean(document.execCommand('insertText',false,text)); } catch { /* fallback */ }
+                if (accepted || value(el).includes(text) || !el.isConnected) return true;
+                if (value(el).trim()) {
+                    const prefix=evidenceText(text).slice(0,36);
+                    return !!prefix && evidenceText(value(el)).includes(prefix);
                 }
-                return value(el).includes(text);
+                el.textContent=text;
+                el.dispatchEvent(new InputEvent('input',{bubbles:true,inputType:'insertText',data:text}));
+                return value(el).includes(text) || !el.isConnected;
             }
             if ('value' in el) {
                 const prototype=el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;
@@ -555,9 +560,39 @@ export async function insertIntoKeep(note) {
         // Verify body *after* title entry. A replacement node is permissible
         // only when the same new editor can be reacquired. If Keep discarded
         // the body, reinsert it once into the validated EMPTY replacement.
-        const normalized=evidenceText;
-        const renderContainsBody=(editorRoot)=>evidenceInsideCurrentEditor(editorRoot,bodyField);
+        // Keep turns the source URL into an <a> and may omit the original
+        // plain-text representation while redrawing the editor. Treat that
+        // actual link, confined to this new note, as insertion evidence.
+        const sourceUrls=(note.body.match(/https?:\/\/[^\s<>"']+/g) || []).map(raw=>{
+            try { return new URL(raw.replace(/[),;]+$/,'')).href; } catch { return null; }
+        }).filter(Boolean);
+        const newEditorRect=box(pair.root);
+        function hasRenderedSourceLink() {
+            if (!sourceUrls.length || !newEditorRect) return false;
+            return query('a[href]').some(link=>{
+                if (!isVisible(link) || inOldCard(link,oldCards)) return false;
+                let href;
+                try { href=new URL(link.href).href; } catch { return false; }
+                if (!sourceUrls.includes(href)) return false;
+                const r=box(link);
+                return !!r && r.left >= newEditorRect.left-15 &&
+                    r.right <= newEditorRect.right+15 &&
+                    r.top >= newEditorRect.top-15 &&
+                    r.top <= newEditorRect.bottom+75;
+            });
+        }
+        const renderContainsBody=(editorRoot)=>
+            evidenceInsideCurrentEditor(editorRoot,bodyField) || hasRenderedSourceLink();
         let root=currentRoot;
+        // Rich-link conversion is asynchronous; do not react to the temporary
+        // empty body slot by writing the whole note again.
+        if (sourceUrls.length && !renderContainsBody(root)) {
+            for (let i=0;i<12 && !renderContainsBody(root);i++) await SLEEP(125);
+        }
+        if (sourceUrls.length && !renderContainsBody(root)) {
+            return {ok:false,partial:true,code:'body-not-verified',
+                message:'The source link was not yet visible in this note. No second insertion was attempted.'};
+        }
         // Keep may preserve body text in its state and redraw it as plain
         // visible text (not as contenteditable). In that case DO NOT write
         // it a second time: doing so could duplicate the note contents.
@@ -579,7 +614,7 @@ export async function insertIntoKeep(note) {
             }
         }
         await SLEEP(140);
-        if (!evidenceInsideCurrentEditor(root,bodyField)) {
+        if (!renderContainsBody(root)) {
             return {ok:false,partial:true,code:'body-not-verified',
                 message:'Title was entered but note details could not be verified in the active Keep editor. Inspect the open note; do not reinsert.'};
         }

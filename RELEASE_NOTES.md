@@ -1,13 +1,18 @@
-# Send to Google Keep 0.2.8 — Release candidate
+# v0.2.12 — Minimal reset from the proven v0.2.8 build
 
-This release repairs two failures seen in the authenticated Opera GX screenshots: Keep note text is inserted but Close is not activated, and the same source URL appears twice in the note body.
+The codebase is reset to the exact shipped v0.2.8 implementation, which the user confirmed could insert and automatically close notes. Only `extension/keep-inject.js` and the manifest version changed.
 
-**Changed:** Close now tries a limited sequence of UI actions and checks the actual disappearance of the active editor. The recovery panel is moved away from Close. Source-attribution normalization removes repeated automatic Source lines, even when joined to a sentence.
+## Why duplicated URLs happened
 
-**Not changed:** OAuth-free Keep site integration, body-first insertion, popup reuse, draft persistence, account-path checks, or read/write permissions.
+Google Keep auto-linkifies source URLs and may replace the body DOM after title input. v0.2.8 incorrectly interpreted that as missing body text and activated the details editor again. This could double the complete body, including the source URL and reference date. Later releases blocked this second write but falsely reported a failed note; the popup manager consequently opened additional windows.
 
-**Validated:** 50 Node unit tests and the controlled Chromium Keep editor fixtures, including 2 new Close regressions.
+## The minimal repair
 
-**Not validated:** A full authenticated Opera GX end-to-end test or independent confirmation that Google cloud sync has completed.
+- Accept the initial body insertion when Chromium reports success or Keep redraws the active body field; do not fire a duplicate synthetic fallback into populated text.
+- After title input, treat a visibly rendered source hyperlink *inside the same new editor bounds* as evidence that Keep retained the body. Wait briefly for asynchronous linkification.
+- Never reinsert a URL-containing body when the hyperlink still cannot be verified. Keep the note in recovery instead of producing duplicates.
+- Preserve v0.2.8's body-first insertion, Close behavior, reusable popup manager, review UI, permissions, and source URL setting unchanged.
 
-**Upgrade:** Replace the contents of your unpacked extension folder and click Reload at `opera://extensions`. Do not retry an already partially entered note. Existing notes and duplicated source lines are not rewritten.
+## Important
+
+This is tested in browser DOM fixtures, not in the user's authenticated Opera GX. Automatic Close and cloud sync still require live validation. An ambiguous editor with no verified source link safely stops and may remain for manual recovery. Existing partially inserted notes are not modified.

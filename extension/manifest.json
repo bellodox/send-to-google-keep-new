@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Send to Google Keep",
   "short_name": "Send to Keep",
-  "version": "0.2.8",
+  "version": "0.2.12",
   "description": "Capture to Google Keep with one reusable compact popup, optional review, and independent recovery records. No Google OAuth.",
   "minimum_chrome_version": "116",
   "permissions": [

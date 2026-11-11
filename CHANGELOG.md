@@ -1,14 +1,12 @@
 # Changelog
 
-## 0.2.8 (2026-11-11)
+## 0.2.12 — 2026-11-11
+- Reset to v0.2.8 as confirmed working baseline.
+- Prevent a second body insertion when Google Keep linkifies the source URL.
+- Use a source hyperlink in the active new-note editor as a narrowly scoped redraw acknowledgment.
+- Prevent repeated `execCommand` fallbacks after text has already been entered or the editable was replaced.
+- Preserve original popup, Close, recovery and settings behavior unchanged.
+- Add browser regression proving that v0.2.8 reactivates the body twice while this build does not.
 
-- Fix automatic Close when the label is not the actual event target.
-- Add safe fallback to a parent button, pointer/mouse events, and click-away. Never report success without observing closure.
-- Move the recovery panel so it no longer hides Keep's native Close control.
-- Normalize duplicate Source URL references in selected text before insertion.
-- Add five attribution regression tests and two new Chromium Close-flow regressions.
-- Preserve the v0.2.7 body-first insertion sequence, single reusable popup, and persistent drafts.
-
-## Previous releases
-
-See project history. No older version is considered independently cloud-verified.
+## 0.2.8 — baseline
+- See the previous v0.2.8 release for historical changes.
