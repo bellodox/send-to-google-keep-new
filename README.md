@@ -1,4 +1,4 @@
-# Send to Google Keep — Reusable Popup v0.2.8
+# Send to Google Keep — v0.2.8
 
 This is an **unofficial Opera/Chromium extension** rebuilt from the previous v0.1.8 experiment in response to real Opera GX failures. It is **not** a Google product, does not use the private Keep API, and has **not yet passed a live authenticated Opera test**.
 
@@ -96,3 +96,5 @@ Tested in Chromium with rich linkification and body redraw, and through the orig
 - **No additional permissions or network endpoints.** The original single reusable Keep popup and independent recovery records remain.
 
 The v0.2.8 browser tests include actionable-parent Close, document click-away Close, no-op Close failure, and rich-link body persistence. They are controlled Chromium fixtures. Authentication and cloud persistence still require testing in Opera GX.
+
+Developed with [SpeXcode - Open-Source Harness for Agentic Engineering as VS Code extension](https://github.com/SpaceXpanse/SpeXcode).
