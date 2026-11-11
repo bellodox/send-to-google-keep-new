@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Send to Google Keep — Options</title><link rel="stylesheet" href="ui.css"></head>
+<body class="options-page"><main class="options-shell">
+  <header class="app-header options-head"><span class="brand-icon" aria-hidden="true">✎</span><div><span class="eyebrow">SEND TO GOOGLE KEEP</span><h1>Options</h1><p>Independent captures. No blocking pending queue.</p></div></header>
+  <section class="options-card"><div class="section-overline">WORKFLOW</div><h2>Preferences</h2>
+    <label class="toggle-line"><span><strong>Review every note before sending</strong><small>Open a separate window to change the title, date and details.</small></span><input type="checkbox" id="reviewBeforeOpen"><span class="toggle" aria-hidden="true"></span></label>
+    <label class="toggle-line"><span><strong>Open Keep in a compact window</strong><small>Separate popup without Opera's regular tab and address bars.</small></span><input type="checkbox" id="openKeepPopup"><span class="toggle" aria-hidden="true"></span></label>
+    <label class="toggle-line"><span><strong>Include source URL</strong></span><input type="checkbox" id="includeUrl"><span class="toggle" aria-hidden="true"></span></label>
+    <label class="toggle-line"><span><strong>Strip tracking parameters</strong><small>Keeps known functional IDs, such as YouTube videos, while removing tracking and unrecognized parameters.</small></span><input type="checkbox" id="stripQuery"><span class="toggle" aria-hidden="true"></span></label>
+    <p id="settings-message" class="muted" role="status"></p>
+  </section>
+  <section class="options-card"><div class="section-overline">ONE-TIME SETUP</div><h2>Enable automatic insertion</h2>
+    <p>Grant access to <code>keep.google.com</code> once. Without it, the extension opens a note editor to request permission rather than silently opening an inactive tab.</p>
+    <div class="actions wrap-actions"><button id="authorize" class="button primary">Allow Google Keep access</button><button id="new-note" class="button secondary">+ New note</button></div>
+    <p id="permission-status" class="muted" role="status"></p>
+  </section>
+  <section class="options-card"><div class="section-overline">RECOVERY</div><h2>Recent captures</h2>
+    <p class="muted">Each capture proceeds independently. Failed captures remain here for recovery, without blocking new ones. Only an observed editor close is treated as UI completion—not proof of cloud sync. Drafts and recovery records stay on this device across restarts until removed.</p><div class="actions wrap-actions"><button id="clear-completed" class="button secondary" type="button">Clear completed history</button></div>
+    <div id="records" role="list"></div>
+  </section>
+  <footer class="footer">No private Keep API or Google OAuth. One attempt per capture; uncertain writes are not automatically retried. <a href="https://keep.google.com/" target="_blank" rel="noopener">Google Keep</a></footer>
+</main><script type="module" src="options.js"></script></body></html>

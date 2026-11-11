@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Send to Google Keep</title><link rel="stylesheet" href="ui.css"></head>
+<body class="editor-page"><main class="panel">
+  <header class="app-header"><span class="brand-icon" aria-hidden="true">✎</span><div><span class="eyebrow">SEND TO GOOGLE KEEP</span><h1>New note</h1></div></header>
+  <p class="lede">Edit the note, then send it to the separate Google Keep window.</p>
+  <form id="review-form">
+    <div class="field"><label for="note-title">Title</label><input id="note-title" required maxlength="1000" autofocus></div>
+    <div class="field"><label for="note-date">Reference date <span class="optional">optional</span></label><input id="note-date" type="date" min="1900-01-01" max="9999-12-31"><small>Stored as note text. It does not create a reminder.</small></div>
+    <div class="field"><label for="note-details">Details</label><textarea id="note-details" rows="8" maxlength="8000"></textarea></div>
+    <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+    <div class="actions"><button class="button secondary" id="copy" type="button">Copy note</button><button class="button primary" id="submit" type="submit">Send to Google Keep</button></div>
+  </form>
+  <div id="manual" hidden><p class="muted">Automatic insertion did not finish. Your note is preserved. Check the Keep window before inserting manually to avoid duplicates.</p>
+    <div class="actions wrap-actions"><button class="button secondary" id="copy-title">Copy title</button><button class="button secondary" id="copy-details">Copy details</button><button class="button secondary" id="open-manual">Open Keep for manual entry</button></div>
+  </div>
+  <footer class="footer">Google Keep-only access may be requested once. No Google OAuth, password, or external server. The extension cannot independently verify cloud sync.</footer>
+</main><script type="module" src="editor.js"></script></body></html>
